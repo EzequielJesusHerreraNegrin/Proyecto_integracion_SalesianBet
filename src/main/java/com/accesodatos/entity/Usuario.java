@@ -1,7 +1,11 @@
 package com.accesodatos.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +31,8 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "roles")
-@EqualsAndHashCode(exclude = "roles")
+@ToString(exclude = {"roles","apuestas"})
+@EqualsAndHashCode(exclude = {"roles","apuestas"})
 @Table(name = "usuarios")
 public class Usuario {
 
@@ -62,6 +67,15 @@ public class Usuario {
 	)
 	@Builder.Default
 	private Set<Rol> roles = new HashSet<>();
+	
+	@OneToMany(
+			mappedBy = "usuario",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+			)
+	@JsonManagedReference
+	@Builder.Default
+	private List<Apuesta> apuestas = new ArrayList<>();
 	
 	public void addRole(Rol rol) {
 		this.roles.add(rol);

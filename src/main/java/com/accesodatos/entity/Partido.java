@@ -1,12 +1,15 @@
 package com.accesodatos.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +34,8 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "equipos")
-@EqualsAndHashCode(exclude = "equipos")
+@ToString(exclude = {"equipos", "apuestas"})
+@EqualsAndHashCode(exclude = {"equipos", "apuestas"})
 @Table(name = "partidos")
 public class Partido {
 
@@ -68,4 +72,12 @@ public class Partido {
 	@JoinColumn(name = "competicion_id", nullable = false)
 	@JsonBackReference
 	private Competicion competicion;
+	
+	@OneToMany(
+			mappedBy = "partido",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true
+			)
+	@JsonManagedReference
+	private List<Apuesta> apuestas = new ArrayList<>();
 }
